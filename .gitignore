@@ -1,5 +1,6 @@
 bin/
 build/
+labview/builds/
 .project
 .classpath
 .settings/*

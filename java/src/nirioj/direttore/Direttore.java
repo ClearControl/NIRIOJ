@@ -1,4 +1,4 @@
-package rtlib.nifpga;
+package nirioj.direttore;
 
 import java.io.Closeable;
 import java.nio.ByteBuffer;
@@ -6,17 +6,17 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
+import nirioj.bridj.DirettoreLibrary;
+import nirioj.bridj.LStrHandleStruct;
+import nirioj.bridj.TD1;
+
 import org.bridj.Pointer;
 
-import rtlib.nifpga.bridj.DirettoreLibrary;
-import rtlib.nifpga.bridj.LStrHandleStruct;
-import rtlib.nifpga.bridj.TD1;
-
-public class DirettoreFPGA implements Closeable
+public class Direttore implements Closeable
 {
 
 	public static final int cNanosecondsPerTicks = 25;
-	private static final int cMinimumDeltaTimeInNanoseconds = (3000);
+	private static final int cMinimumDeltaTimeInNanoseconds = (int) (3000);
 	public static final int cNumberOfChannels = 16;
 	public static final int cFIFODepth = 3;
 
@@ -46,7 +46,6 @@ public class DirettoreFPGA implements Closeable
 		}
 	}
 
-	@Override
 	public void close()
 	{
 		synchronized (mLockObject)
@@ -78,6 +77,7 @@ public class DirettoreFPGA implements Closeable
 			return !(mError = reportError(mErrorOut));
 		}
 	}
+
 
 	public long play(	double pDeltaTimeInMicroSeconds,
 										int pNumberOfTimePointsToPlay,
@@ -113,7 +113,7 @@ public class DirettoreFPGA implements Closeable
 			}
 
 			return play(lDeltaTimeBuffer,
-									lNbTimePointsBuffer,
+			            lNbTimePointsBuffer,
 									lSyncControlShortBuffer,
 									pNumberOfMatrices,
 									pMatricesBuffer);
@@ -257,6 +257,7 @@ public class DirettoreFPGA implements Closeable
 	{
 		return 0.001 * cMinimumDeltaTimeInNanoseconds;
 	}
+
 
 	public int getNumberOfChannels()
 	{

@@ -1,4 +1,4 @@
-package rtlib.nifpga.demo;
+package nirioj.direttore.demo;
 
 import static org.junit.Assert.assertTrue;
 
@@ -9,11 +9,11 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
+import nirioj.direttore.Direttore;
+
 import org.junit.Test;
 
-import rtlib.nifpga.DirettoreFPGA;
-
-public class DirettoreFPGADemo
+public class DirettoreDemo
 {
 
 	@Test
@@ -21,7 +21,7 @@ public class DirettoreFPGADemo
 													SocketException,
 													InterruptedException
 	{
-		DirettoreFPGA lDirettore = new DirettoreFPGA();
+		Direttore lDirettore = new Direttore();
 
 		assertTrue(lDirettore.open());
 		assertTrue(lDirettore.start());
@@ -29,8 +29,8 @@ public class DirettoreFPGADemo
 		final short lNumberOfTimePoints = 2048;
 		final int lNumberOfChannels = lDirettore.getNumberOfChannels();
 		final int lNumberOfMatrices = 10;
-		final double lFrequency = 1;
-		final double lAmplitude = 10000;
+		final double lFrequency = 10;
+		final double lAmplitude = 3000;
 
 		// ByteBuffer lByteBuffer = ByteBuffer.allocateDirect(lNumberOfMatrices* 2);
 
@@ -42,16 +42,16 @@ public class DirettoreFPGADemo
 																												.order(ByteOrder.nativeOrder());
 
 		final IntBuffer lSyncControlShortBuffer = lSyncControlByteBuffer.asIntBuffer();
-
+		
 		final IntBuffer lNumberOfTimePointsBuffer = ByteBuffer.allocateDirect(lNumberOfMatrices * 4)
-																													.order(ByteOrder.nativeOrder())
-																													.asIntBuffer();
+				.order(ByteOrder.nativeOrder())
+				.asIntBuffer();
 
 		final ShortBuffer lMatrixBuffer = ByteBuffer.allocateDirect(lNumberOfMatrices * lNumberOfChannels
-																																* lNumberOfTimePoints
-																																* 2)
-																								.order(ByteOrder.nativeOrder())
-																								.asShortBuffer();
+																															* lNumberOfTimePoints
+																															* 2)
+																							.order(ByteOrder.nativeOrder())
+																							.asShortBuffer();
 
 		for (int m = 0; m < lNumberOfMatrices; m++)
 		{
@@ -77,7 +77,7 @@ public class DirettoreFPGADemo
 		{
 			System.out.println("Play #" + i);
 			long lEstimatedPlayBacktimeInNanoseconds = lDirettore.play(	lDeltaTimeBuffer,
-																																	lNumberOfTimePointsBuffer,
+			                                                           	lNumberOfTimePointsBuffer,
 																																	lSyncControlShortBuffer,
 																																	lNumberOfMatrices,
 																																	lMatrixBuffer);
