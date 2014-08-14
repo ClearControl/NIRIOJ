@@ -4,8 +4,8 @@
 //-reification
 -f
 -o ..\
--rootPackage direttore.bridj
--package direttore.bridj
+-rootPackage nirioj.bridj
+-package nirioj.bridj
 -arch win64 
 -D _M_X64
 -libFile ..\..\..\labview\lib\Direttore.dll

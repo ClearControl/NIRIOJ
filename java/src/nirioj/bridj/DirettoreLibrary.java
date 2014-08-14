@@ -22,7 +22,7 @@ public class DirettoreLibrary {
 	/**
 	 * DirettoreClose<br>
 	 * Original signature : <code>void DirettoreClose(uintptr_t*, TD1*)</code><br>
-	 * <i>native declaration : C:\Users\myerslab\workspace\Direttore\labview\lib\Direttore.h:15</i>
+	 * <i>native declaration : C:\Users\myerslab\workspace2\Bindings\NIRIOJ\labview\lib\Direttore.h:15</i>
 	 */
 	@Name("DirettoreClose") 
 	public static void direttoreClose(Pointer<Pointer<Integer > > FPGAReference, Pointer<TD1 > ErrorOut) {
@@ -33,7 +33,7 @@ public class DirettoreLibrary {
 	/**
 	 * DirettoreOpen<br>
 	 * Original signature : <code>void DirettoreOpen(uint32_t, int32_t, uintptr_t*, TD1*)</code><br>
-	 * <i>native declaration : C:\Users\myerslab\workspace\Direttore\labview\lib\Direttore.h:19</i>
+	 * <i>native declaration : C:\Users\myerslab\workspace2\Bindings\NIRIOJ\labview\lib\Direttore.h:19</i>
 	 */
 	@Name("DirettoreOpen") 
 	public static void direttoreOpen(int TriggerFIFODepth, int MatrixFIFODepth, Pointer<Pointer<Integer > > FPGAReference, Pointer<TD1 > ErrorOut) {
@@ -44,7 +44,7 @@ public class DirettoreLibrary {
 	/**
 	 * DirettoreStart<br>
 	 * Original signature : <code>void DirettoreStart(uintptr_t*, TD1*)</code><br>
-	 * <i>native declaration : C:\Users\myerslab\workspace\Direttore\labview\lib\Direttore.h:24</i>
+	 * <i>native declaration : C:\Users\myerslab\workspace2\Bindings\NIRIOJ\labview\lib\Direttore.h:24</i>
 	 */
 	@Name("DirettoreStart") 
 	public static void direttoreStart(Pointer<Pointer<Integer > > FPGAReference, Pointer<TD1 > ErrorOut) {
@@ -53,20 +53,9 @@ public class DirettoreLibrary {
 	@Name("DirettoreStart") 
 	protected native static void direttoreStart(@Ptr long FPGAReference, @Ptr long ErrorOut);
 	/**
-	 * DirettorePlay<br>
-	 * Original signature : <code>void DirettorePlay(uintptr_t*, int32_t[], int32_t, int32_t[], int32_t, int32_t[], int32_t, int32_t, int16_t[], int32_t, uint32_t*, TD1*)</code><br>
-	 * <i>native declaration : C:\Users\myerslab\workspace\Direttore\labview\lib\Direttore.h:28</i>
-	 */
-	@Name("DirettorePlay") 
-	public static void direttorePlay(Pointer<Pointer<Integer > > FPGAReference, Pointer<Integer > DeltaTimeArray, int DeltaTimeArrayLength, Pointer<Integer > NumberOfTimePointsToPlayArray, int NumberofTimePointsToPlayArrayLength, Pointer<Integer > SyncArray, int SyncArrayLength, int NumberOfMatrices, Pointer<Short > MatricesArray, int MatricesArrayLength, Pointer<Integer > SpaceLeftInQueue, Pointer<TD1 > ErrorOut) {
-		direttorePlay(Pointer.getPeer(FPGAReference), Pointer.getPeer(DeltaTimeArray), DeltaTimeArrayLength, Pointer.getPeer(NumberOfTimePointsToPlayArray), NumberofTimePointsToPlayArrayLength, Pointer.getPeer(SyncArray), SyncArrayLength, NumberOfMatrices, Pointer.getPeer(MatricesArray), MatricesArrayLength, Pointer.getPeer(SpaceLeftInQueue), Pointer.getPeer(ErrorOut));
-	}
-	@Name("DirettorePlay") 
-	protected native static void direttorePlay(@Ptr long FPGAReference, @Ptr long DeltaTimeArray, int DeltaTimeArrayLength, @Ptr long NumberOfTimePointsToPlayArray, int NumberofTimePointsToPlayArrayLength, @Ptr long SyncArray, int SyncArrayLength, int NumberOfMatrices, @Ptr long MatricesArray, int MatricesArrayLength, @Ptr long SpaceLeftInQueue, @Ptr long ErrorOut);
-	/**
 	 * DirettoreStop<br>
 	 * Original signature : <code>void DirettoreStop(uintptr_t*, TD1*)</code><br>
-	 * <i>native declaration : C:\Users\myerslab\workspace\Direttore\labview\lib\Direttore.h:37</i>
+	 * <i>native declaration : C:\Users\myerslab\workspace2\Bindings\NIRIOJ\labview\lib\Direttore.h:28</i>
 	 */
 	@Name("DirettoreStop") 
 	public static void direttoreStop(Pointer<Pointer<Integer > > FPGAReference, Pointer<TD1 > ErrorOut) {
@@ -75,8 +64,19 @@ public class DirettoreLibrary {
 	@Name("DirettoreStop") 
 	protected native static void direttoreStop(@Ptr long FPGAReference, @Ptr long ErrorOut);
 	/**
+	 * DirettorePlay<br>
+	 * Original signature : <code>void DirettorePlay(uintptr_t*, int32_t[], int32_t, int32_t[], int32_t, int32_t[], int32_t, int32_t, int16_t[], int32_t, uint32_t*, TD1*)</code><br>
+	 * <i>native declaration : C:\Users\myerslab\workspace2\Bindings\NIRIOJ\labview\lib\Direttore.h:32</i>
+	 */
+	@Name("DirettorePlay") 
+	public static void direttorePlay(Pointer<Pointer<Integer > > FPGAReference, Pointer<Integer > DeltaTimeArray, int DeltaTimeArrayLength, Pointer<Integer > NumberOfTimePointsToPlayArray, int NumberOfTimePointsToPlayArrayLength, Pointer<Integer > SyncArray, int SyncArrayLength, int NumberOfMatrices, Pointer<Short > MatricesArray, int MatricesArrayLength, Pointer<Integer > SpaceLeftInQueue, Pointer<TD1 > ErrorOut) {
+		direttorePlay(Pointer.getPeer(FPGAReference), Pointer.getPeer(DeltaTimeArray), DeltaTimeArrayLength, Pointer.getPeer(NumberOfTimePointsToPlayArray), NumberOfTimePointsToPlayArrayLength, Pointer.getPeer(SyncArray), SyncArrayLength, NumberOfMatrices, Pointer.getPeer(MatricesArray), MatricesArrayLength, Pointer.getPeer(SpaceLeftInQueue), Pointer.getPeer(ErrorOut));
+	}
+	@Name("DirettorePlay") 
+	protected native static void direttorePlay(@Ptr long FPGAReference, @Ptr long DeltaTimeArray, int DeltaTimeArrayLength, @Ptr long NumberOfTimePointsToPlayArray, int NumberOfTimePointsToPlayArrayLength, @Ptr long SyncArray, int SyncArrayLength, int NumberOfMatrices, @Ptr long MatricesArray, int MatricesArrayLength, @Ptr long SpaceLeftInQueue, @Ptr long ErrorOut);
+	/**
 	 * Original signature : <code>long LVDLLStatus(char*, int, void*)</code><br>
-	 * <i>native declaration : C:\Users\myerslab\workspace\Direttore\labview\lib\Direttore.h:39</i>
+	 * <i>native declaration : C:\Users\myerslab\workspace2\Bindings\NIRIOJ\labview\lib\Direttore.h:39</i>
 	 */
 	@Name("LVDLLStatus") 
 	@CLong 

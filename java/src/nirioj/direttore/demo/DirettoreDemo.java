@@ -42,21 +42,22 @@ public class DirettoreDemo
 																												.order(ByteOrder.nativeOrder());
 
 		final IntBuffer lSyncControlShortBuffer = lSyncControlByteBuffer.asIntBuffer();
-		
+
 		final IntBuffer lNumberOfTimePointsBuffer = ByteBuffer.allocateDirect(lNumberOfMatrices * 4)
-				.order(ByteOrder.nativeOrder())
-				.asIntBuffer();
+																													.order(ByteOrder.nativeOrder())
+																													.asIntBuffer();
 
 		final ShortBuffer lMatrixBuffer = ByteBuffer.allocateDirect(lNumberOfMatrices * lNumberOfChannels
-																															* lNumberOfTimePoints
-																															* 2)
-																							.order(ByteOrder.nativeOrder())
-																							.asShortBuffer();
+																																* lNumberOfTimePoints
+																																* 2)
+																								.order(ByteOrder.nativeOrder())
+																								.asShortBuffer();
 
 		for (int m = 0; m < lNumberOfMatrices; m++)
 		{
 			lDeltaTimeBuffer.put(lDirettore.convertMicroSecondsToTicks(3));
 			lNumberOfTimePointsBuffer.put(lNumberOfTimePoints);
+			lSyncControlShortBuffer.put(1);
 
 			for (int t = 0; t < lNumberOfTimePoints; t++)
 			{
@@ -76,17 +77,12 @@ public class DirettoreDemo
 		for (int i = 0; i < 50000; i++)
 		{
 			System.out.println("Play #" + i);
-			long lEstimatedPlayBacktimeInNanoseconds = lDirettore.play(	lDeltaTimeBuffer,
-			                                                           	lNumberOfTimePointsBuffer,
-																																	lSyncControlShortBuffer,
-																																	lNumberOfMatrices,
-																																	lMatrixBuffer);
+			lDirettore.play(lDeltaTimeBuffer,
+											lNumberOfTimePointsBuffer,
+											lSyncControlShortBuffer,
+											lNumberOfMatrices,
+											lMatrixBuffer);
 
-			System.out.println("lDirettore.getPlayQueueCurrentFilledLength()=" + lDirettore.getPlayQueueCurrentFilledLength());
-			System.out.println(lEstimatedPlayBacktimeInNanoseconds * 0.001 * 0.001);
-			// Thread.sleep((long) Math.round(lEstimatedPlayBacktimeInNanoseconds *
-			// 0.001 * 0.001));
-			// Thread.sleep(40);
 		}
 		Thread.sleep(4000);
 		// System.out.println("waiting a long time now....");

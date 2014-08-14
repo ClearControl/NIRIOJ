@@ -79,7 +79,7 @@ public class Direttore implements Closeable
 	}
 
 
-	public long play(	double pDeltaTimeInMicroSeconds,
+	public boolean play(double pDeltaTimeInMicroSeconds,
 										int pNumberOfTimePointsToPlay,
 										int pSyncChannel,
 										int pSyncMode,
@@ -120,7 +120,7 @@ public class Direttore implements Closeable
 		}
 	}
 
-	public long play(	IntBuffer pDeltaTimeInTicks,
+	public boolean play(IntBuffer pDeltaTimeInTicks,
 										IntBuffer pNumberOfTimePointsToPlay,
 										IntBuffer pSyncControl,
 										final int pNumberOfMatrices,
@@ -129,7 +129,7 @@ public class Direttore implements Closeable
 		synchronized (mLockObject)
 		{
 			if (mError)
-				return -1;
+				return false;
 
 			pDeltaTimeInTicks.rewind();
 			pNumberOfTimePointsToPlay.rewind();
@@ -142,17 +142,19 @@ public class Direttore implements Closeable
 			Pointer<Short> lPointerToMatricesBuffer = Pointer.pointerToShorts(pMatricesBuffer);
 
 			/*
-			Pointer<Pointer<Integer > > FPGAReference, 
-			Pointer<Short > DeltaTimeArray, 
-			int DeltaTimeArrayLength, 
-			short NumberOfTimePointsToPlay, 
-			Pointer<Short > SyncArray, 
-			int SyncArrayLength, 
-			short NumberOfMatrices, 
-			Pointer<Short > MatricesArray, 
-			int MatricesArrayLength, 
-			Pointer<Integer > SpaceLeftInQueue, 
-			Pointer<TD1 > ErrorOut
+				Pointer<Pointer<Integer > > FPGAReference, 
+				Pointer<Integer > DeltaTimeArray, 
+				int DeltaTimeArrayLength, Pointer<Integer > 
+				NumberOfTimePointsToPlayArray, 
+				int NumberofTimePointsToPlayArrayLength, 
+				Pointer<Integer > SyncArray, 
+				int SyncArrayLength, 
+				int NumberOfMatrices, 
+				Pointer<Short > MatricesArray, 
+				int MatricesArrayLength, 
+				Pointer<Integer > SpaceLeftInQueue, 
+				Pointer<TD1 > ErrorOut) {
+			
 			*/
 
 			DirettoreLibrary.direttorePlay(	mFPGAReference,
@@ -168,18 +170,6 @@ public class Direttore implements Closeable
 																			mPointerToSpaceLeftInQueue,
 																			mErrorOut);
 
-			long lEstimatedPlayBackTimeInNanoseconds = 0;
-			pDeltaTimeInTicks.rewind();
-			pNumberOfTimePointsToPlay.rewind();
-			for (int i = 0; i < pNumberOfMatrices; i++)
-			{
-				final int lDeltaTimeInTicks = pDeltaTimeInTicks.get();
-				final int lNumberOfTimePointsToPlay = pNumberOfTimePointsToPlay.get();
-				final int lDeltaTimeInNanoseconds = Math.max(	cMinimumDeltaTimeInNanoseconds,
-																											lDeltaTimeInTicks * cNanosecondsPerTicks);
-				final long lEstimatedPlayBackTimeInNanosecondsForMatrix = lNumberOfTimePointsToPlay * lDeltaTimeInNanoseconds;
-				lEstimatedPlayBackTimeInNanoseconds += lEstimatedPlayBackTimeInNanosecondsForMatrix;
-			}
 
 			if (lPointerToDeltaTimeInTicksBuffer != null)
 				lPointerToDeltaTimeInTicksBuffer.release();
@@ -190,9 +180,8 @@ public class Direttore implements Closeable
 			if (lPointerToMatricesBuffer != null)
 				lPointerToMatricesBuffer.release();
 
-			// (mError = reportError(mErrorOut)) ?
 
-			return lEstimatedPlayBackTimeInNanoseconds;/**/
+			return true;/**/
 		}
 	}
 

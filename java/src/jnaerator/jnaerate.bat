@@ -1,1 +1,1 @@
- "\Program Files\Java\jre7\bin\java.exe" -jar ..\..\..\..\Libraries\jnaerator\jar\jnaerator.jar config.win.jnaerator
+ "\Program Files\Java\jre8\bin\java.exe" -jar ../../../tools/jnaerator.jar config.win.jnaerator
