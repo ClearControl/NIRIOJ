@@ -42,7 +42,27 @@ public class Direttore implements Closeable
 																			mMatrixFIFODepth,
 																			mFPGAReference,
 																			mErrorOut);
-			return !(mError = reportError(mErrorOut));
+
+			final boolean lIsOpened = !(mError = reportError(mErrorOut));
+
+			if (lIsOpened)
+				Runtime.getRuntime().addShutdownHook(new Thread()
+				{
+					@Override
+					public void run()
+					{
+						try
+						{
+							close();
+						}
+						catch (Throwable e)
+						{
+							e.printStackTrace();
+						}
+					}
+				});
+
+			return lIsOpened;
 		}
 	}
 
@@ -50,9 +70,12 @@ public class Direttore implements Closeable
 	{
 		synchronized (mLockObject)
 		{
+			if (mFPGAReference == null)
+				return;
 			DirettoreLibrary.direttoreClose(mFPGAReference, mErrorOut);
 			mErrorOut.release();
 			mFPGAReference.release();
+			mFPGAReference = null;
 			mPointerToSpaceLeftInQueue.release();
 			mError = reportError(mErrorOut);
 		}
