@@ -1,6 +1,5 @@
 package nirioj.direttore;
 
-import java.io.Closeable;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
@@ -12,11 +11,11 @@ import nirioj.bridj.TD1;
 
 import org.bridj.Pointer;
 
-public class Direttore implements Closeable
+public class Direttore implements AutoCloseable
 {
 
 	public static final int cNanosecondsPerTicks = 25;
-	private static final int cMinimumDeltaTimeInNanoseconds = (int) (3000);
+	private static final int cMinimumDeltaTimeInNanoseconds = (3000);
 	public static final int cNumberOfChannels = 16;
 	public static final int cFIFODepth = 3;
 
@@ -66,6 +65,7 @@ public class Direttore implements Closeable
 		}
 	}
 
+	@Override
 	public void close()
 	{
 		synchronized (mLockObject)
