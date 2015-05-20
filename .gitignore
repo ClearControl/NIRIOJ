@@ -7,3 +7,4 @@ labview/builds/
 .gradle
 *.class
 .DS_Store
+labview/direttore/Direttore.aliases
