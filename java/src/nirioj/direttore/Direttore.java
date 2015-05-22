@@ -1,5 +1,7 @@
 package nirioj.direttore;
 
+import static java.lang.Math.toIntExact;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
@@ -15,16 +17,18 @@ public class Direttore implements AutoCloseable
 {
 
 	public static final int cNanosecondsPerTicks = 25;
-	private static final int cMinimumDeltaTimeInNanoseconds = (3000);
+	public static final long cMaxNumberOfTimePointsPerMovement = 2048;
+	public static final int cMinimumDeltaTimeInNanoseconds = (3000);
 	public static final int cNumberOfChannels = 16;
 	public static final int cFIFODepth = 3;
+
 
 	private Pointer<Pointer<Integer>> mFPGAReference;
 	private Pointer<TD1> mErrorOut;
 	private boolean mError = false;
 
-	private int mTriggerFIFODepth = cFIFODepth;
-	private int mMatrixFIFODepth = cFIFODepth;
+	private final int mTriggerFIFODepth = cFIFODepth;
+	private final int mMatrixFIFODepth = cFIFODepth;
 	Pointer<Integer> mPointerToSpaceLeftInQueue;
 
 	private final Object mLockObject = new Object();
@@ -54,7 +58,7 @@ public class Direttore implements AutoCloseable
 						{
 							close();
 						}
-						catch (Throwable e)
+						catch (final Throwable e)
 						{
 							e.printStackTrace();
 						}
@@ -101,13 +105,12 @@ public class Direttore implements AutoCloseable
 		}
 	}
 
-
 	public boolean play(double pDeltaTimeInMicroSeconds,
-										int pNumberOfTimePointsToPlay,
-										int pSyncChannel,
-										int pSyncMode,
-										final int pNumberOfMatrices,
-										ShortBuffer pMatricesBuffer)
+											int pNumberOfTimePointsToPlay,
+											int pSyncChannel,
+											int pSyncMode,
+											final int pNumberOfMatrices,
+											ShortBuffer pMatricesBuffer)
 	{
 		synchronized (mLockObject)
 		{
@@ -136,7 +139,7 @@ public class Direttore implements AutoCloseable
 			}
 
 			return play(lDeltaTimeBuffer,
-			            lNbTimePointsBuffer,
+									lNbTimePointsBuffer,
 									lSyncControlShortBuffer,
 									pNumberOfMatrices,
 									pMatricesBuffer);
@@ -144,10 +147,10 @@ public class Direttore implements AutoCloseable
 	}
 
 	public boolean play(IntBuffer pDeltaTimeInTicks,
-										IntBuffer pNumberOfTimePointsToPlay,
-										IntBuffer pSyncControl,
-										final int pNumberOfMatrices,
-										ShortBuffer pMatricesBuffer)
+											IntBuffer pNumberOfTimePointsToPlay,
+											IntBuffer pSyncControl,
+											final int pNumberOfMatrices,
+											ShortBuffer pMatricesBuffer)
 	{
 		synchronized (mLockObject)
 		{
@@ -159,10 +162,40 @@ public class Direttore implements AutoCloseable
 			pSyncControl.rewind();
 			pMatricesBuffer.rewind();
 
-			Pointer<Integer> lPointerToDeltaTimeInTicksBuffer = Pointer.pointerToInts(pDeltaTimeInTicks);
-			Pointer<Integer> lPointerToNumberOfTimePointsToPlay = Pointer.pointerToInts(pNumberOfTimePointsToPlay);
-			Pointer<Integer> lPointerToSyncControlBuffer = Pointer.pointerToInts(pSyncControl);
-			Pointer<Short> lPointerToMatricesBuffer = Pointer.pointerToShorts(pMatricesBuffer);
+			final Pointer<Integer> lPointerToDeltaTimeInTicksBuffer = Pointer.pointerToInts(pDeltaTimeInTicks);
+			final Pointer<Integer> lPointerToNumberOfTimePointsToPlay = Pointer.pointerToInts(pNumberOfTimePointsToPlay);
+			final Pointer<Integer> lPointerToSyncControlBuffer = Pointer.pointerToInts(pSyncControl);
+			final Pointer<Short> lPointerToMatricesBuffer = Pointer.pointerToShorts(pMatricesBuffer);
+
+			play(	lPointerToDeltaTimeInTicksBuffer,
+						lPointerToNumberOfTimePointsToPlay,
+						lPointerToSyncControlBuffer,
+						pNumberOfMatrices,
+						lPointerToMatricesBuffer);
+
+			if (lPointerToDeltaTimeInTicksBuffer != null)
+				lPointerToDeltaTimeInTicksBuffer.release();
+			if (lPointerToNumberOfTimePointsToPlay != null)
+				lPointerToNumberOfTimePointsToPlay.release();
+			if (lPointerToSyncControlBuffer != null)
+				lPointerToSyncControlBuffer.release();
+			if (lPointerToMatricesBuffer != null)
+				lPointerToMatricesBuffer.release();
+
+			return true;/**/
+		}
+	}
+
+	public boolean play(Pointer<Integer> pDeltaTimeInTicks,
+											Pointer<Integer> pNumberOfTimePointsToPlay,
+											Pointer<Integer> pSyncControl,
+											final int pNumberOfMatrices,
+											Pointer<Short> pMatricesBuffer)
+	{
+		synchronized (mLockObject)
+		{
+			if (mError)
+				return false;
 
 			/*
 				Pointer<Pointer<Integer > > FPGAReference, 
@@ -181,28 +214,17 @@ public class Direttore implements AutoCloseable
 			*/
 
 			DirettoreLibrary.direttorePlay(	mFPGAReference,
-																			lPointerToDeltaTimeInTicksBuffer,
-																			pDeltaTimeInTicks.limit(),
-																			lPointerToNumberOfTimePointsToPlay,
-																			pNumberOfTimePointsToPlay.limit(),
-																			lPointerToSyncControlBuffer,
-																			pSyncControl.limit(),
+																			pDeltaTimeInTicks,
+																			toIntExact(pDeltaTimeInTicks.getValidElements()),
+																			pNumberOfTimePointsToPlay,
+																			toIntExact(pNumberOfTimePointsToPlay.getValidElements()),
+																			pSyncControl,
+																			toIntExact(pSyncControl.getValidElements()),
 																			pNumberOfMatrices,
-																			lPointerToMatricesBuffer,
-																			pMatricesBuffer.limit(),
+																			pMatricesBuffer,
+																			toIntExact(pMatricesBuffer.getValidElements()),
 																			mPointerToSpaceLeftInQueue,
 																			mErrorOut);
-
-
-			if (lPointerToDeltaTimeInTicksBuffer != null)
-				lPointerToDeltaTimeInTicksBuffer.release();
-			if (lPointerToNumberOfTimePointsToPlay != null)
-				lPointerToNumberOfTimePointsToPlay.release();
-			if (lPointerToSyncControlBuffer != null)
-				lPointerToSyncControlBuffer.release();
-			if (lPointerToMatricesBuffer != null)
-				lPointerToMatricesBuffer.release();
-
 
 			return true;/**/
 		}
@@ -251,7 +273,7 @@ public class Direttore implements AutoCloseable
 				final int lStringLength = lLStrHandleStruct.cnt();
 				lMessage = new String(lStr.getBytes(), lStringLength);
 			}
-			catch (Throwable e)
+			catch (final Throwable e)
 			{
 				// System.err.println("Error while retreiving error message string");
 			}
@@ -269,7 +291,6 @@ public class Direttore implements AutoCloseable
 	{
 		return 0.001 * cMinimumDeltaTimeInNanoseconds;
 	}
-
 
 	public int getNumberOfChannels()
 	{
