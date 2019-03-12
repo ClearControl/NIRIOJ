@@ -17,7 +17,7 @@ public class Direttore implements AutoCloseable
 {
 
   public static final int cNanosecondsPerTicks = 25;
-  public static final long cMaxNumberOfTimePointsPerMovement = 2048;
+  public static final long cMaxNumberOfTimePointsPerMeasure = 2048;
   public static final int cMinimumDeltaTimeInNanoseconds = (3000);
   public static final int cNumberOfChannels = 16;
   public static final int cFIFODepth = 3;

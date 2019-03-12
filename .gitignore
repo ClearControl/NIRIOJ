@@ -9,4 +9,7 @@ labview/builds/
 .DS_Store
 labview/direttore/Direttore.aliases
 
+gradle/
+.idea/
+
 out
